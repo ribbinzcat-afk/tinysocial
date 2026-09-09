@@ -56,12 +56,19 @@ function renderMsgContent(f, align) {
     return `<div class="tinysocial-chat-bubble tinysocial-chat-bubble-${align}"><p>${escText(f.text || "")}</p></div>`;
 }
 
+/** เติม "฿" หน้าจำนวนเงินเสมอ (ยกเว้นว่างเปล่า) — ไม่ยุ่งกับการจัดรูปแบบตัวเลขที่ AI ใส่มา (คอมม่า/ทศนิยม) */
+function formatMoney(amount) {
+    const value = String(amount ?? "").trim();
+    if (!value) return "";
+    return value.startsWith("฿") ? value : `฿${value}`;
+}
+
 function renderSlipContent(f) {
     return `<div class="tinysocial-chat-slip">
         <div class="tinysocial-chat-slip-head">
-            <div class="tinysocial-chat-slip-bank">${escText(f.bank || "🏦")}</div>
-            <p class="tinysocial-chat-slip-title">โอนเงินสำเร็จ</p>
-            <p class="tinysocial-chat-slip-amount">${escText(f.amount || "")}</p>
+            <div class="tinysocial-chat-slip-bank">🏛</div>
+            <p class="tinysocial-chat-slip-title">โอนเงินสำเร็จ${f.bank ? ` · ${escText(f.bank)}` : ""}</p>
+            <p class="tinysocial-chat-slip-amount">${escText(formatMoney(f.amount))}</p>
             ${(f.date || f.time) ? `<p class="tinysocial-chat-slip-date">${escText(f.date || "")}${f.date && f.time ? " - " : ""}${escText(f.time || "")}</p>` : ""}
         </div>
         <div class="tinysocial-chat-slip-body">
@@ -83,7 +90,7 @@ function renderGiftContent(f) {
     return `<div class="tinysocial-chat-gift tinysocial-chat-gift-opened">
         <div class="tinysocial-chat-gift-icon">🧧</div>
         <span class="tinysocial-chat-gift-label">คุณได้รับอั่งเปาแล้ว</span>
-        <div class="tinysocial-chat-gift-amount">${escText(f.amount || "")}</div>
+        <div class="tinysocial-chat-gift-amount">${escText(formatMoney(f.amount))}</div>
         ${f.note ? `<div class="tinysocial-chat-gift-note"><b>Note:</b> ${escText(f.note)}</div>` : `<small>โอนเข้าธนาคารเรียบร้อย</small>`}
     </div>`;
 }
@@ -164,7 +171,7 @@ export function renderChatMoney(model) {
         <div class="tinysocial-chat-money-icon"><i class="fa-solid fa-arrow-${isIn ? "down" : "up"}"></i></div>
         <div class="tinysocial-chat-money-body">
             <div class="tinysocial-chat-money-top"><span>Bank App</span>${f.time ? `<small>${escText(f.time)}</small>` : ""}</div>
-            <div class="tinysocial-chat-money-sub"><b>${isIn ? "เงินเข้า +" : "-"}${escText(f.amount || "")}</b><br>${isIn ? "จาก" : "ไปยัง"} ${escText(f.who || "")}</div>
+            <div class="tinysocial-chat-money-sub"><b>${isIn ? "เงินเข้า +" : "-"}${escText(formatMoney(f.amount))}</b><br>${isIn ? "จาก" : "ไปยัง"} ${escText(f.who || "")}</div>
         </div>`;
     return div;
 }

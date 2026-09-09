@@ -21,6 +21,15 @@
             </div>
             <p class="tns-hint">ใช้ตอนกด "บรรยายด้วย AI" ในแผง — ต้องเป็นสาย Chat Completion เท่านั้น ไม่เลือก = ใช้ค่า Image Captioning หลักของ ST (Extensions &gt; Image Captioning)</p>
 
+            <div class="tns-row">
+                <label>ฟอนต์การ์ด</label>
+                <select id="tns-font-mode" class="text_pole">
+                    <option value="custom">Sarabun / Kanit (ของ TinySocial เอง)</option>
+                    <option value="system">ตามธีมระบบ (Font Manager / ธีม ST)</option>
+                </select>
+            </div>
+            <p class="tns-hint">"ตามธีมระบบ" จะใช้ฟอนต์เดียวกับที่ Font Manager หรือธีม ST ตั้งไว้ (var(--mainFontFamily)) แทนฟอนต์เริ่มต้นของการ์ด</p>
+
             <hr>
             <div class="tns-section-title">แพลตฟอร์ม</div>
             <p class="tns-hint">"ส่งเอกสารแท็กให้ AI" คุมทั้งเอกสารแท็ก, ข้อมูลตัวตน, และรายการรูปของแพลตฟอร์มนั้นในพรอมป์ — ปิดได้ถ้าอยากให้แสดงการ์ดในแชทอย่างเดียวโดยไม่บอก AI</p>

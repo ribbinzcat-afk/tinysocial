@@ -5,6 +5,7 @@ import { togglePanel } from "./panel.js";
 import { renderAll, teardownAllMessages } from "../inject.js";
 import { PROMPT_DEFS, getPrompt, setPrompt, resetPrompt, isPromptCustomized } from "../prompts.js";
 import { rebuildInjection, clearInjection } from "../promptbuild.js";
+import { applyFontMode } from "../theme.js";
 import { showText, escapeHtml, connectionProfileOptionsHtml } from "./widgets.js";
 
 export const WAND_BUTTON_ID = "tinysocial-menu-button";
@@ -28,7 +29,12 @@ function renderPlatformAlbums(platform) {
             <input type="checkbox" class="tns-platform-album-check" data-album="${a.id}" ${exposed.includes(a.id) ? "checked" : ""}>
             <span>${escapeHtml(a.name)} <small>(${a.kind === "sticker" ? "สติกเกอร์" : "ภาพถ่าย"}, ${a.imageIds.length} รูป)</small></span>
         </label>`).join("");
-    $container.html(`<div class="tns-section-title tns-album-check-title">ส่งอัลบั้มไหนให้ AI</div>${html}`);
+    // ไม่เลือกอัลบั้มเลย = AI ไม่รู้จักรูปในคลังแม้แต่ใบเดียว ทั้งที่ docsInPrompt เปิดอยู่ — สาเหตุอันดับ 1 ของ
+    // "AI เขียนแท็กแต่ไม่ใส่รูป หรือเดา slug มั่ว" เตือนไว้ตรงจุดที่แก้ได้เลย กันคนงงว่าทำไม AI ไม่ยอมใช้รูป
+    const warning = (settings.platforms[platform].docsInPrompt && !exposed.length)
+        ? `<p class="tns-hint tns-album-warning"><i class="fa-solid fa-triangle-exclamation"></i> ยังไม่ได้เลือกอัลบั้มให้แพลตฟอร์มนี้เลย — AI จะไม่รู้จักรูปในคลัง เลยไม่ใส่ img หรือเดาชื่อรูปมั่ว</p>`
+        : "";
+    $container.html(`<div class="tns-section-title tns-album-check-title">ส่งอัลบั้มไหนให้ AI</div>${warning}${html}`);
 }
 
 function renderPromptEditors() {
@@ -72,6 +78,7 @@ export function loadSettingsUi() {
     const s = getSettings();
     $("#tns-enabled").prop("checked", s.enabled);
     $("#tns-api-profile").html(connectionProfileOptionsHtml(s.api.connectionProfileId));
+    $("#tns-font-mode").val(s.ui.fontMode);
     for (const [platform, cfg] of Object.entries(s.platforms)) {
         const $block = $(`.tns-platform-block[data-platform="${platform}"]`);
         $block.find(".tns-platform-enabled").prop("checked", cfg.enabled);
@@ -107,6 +114,13 @@ export function bindSettingsHandlers() {
         saveSettings();
     });
 
+    $(document).on("change", "#tns-font-mode", function () {
+        const mode = $(this).val();
+        getSettings().ui.fontMode = mode;
+        saveSettings();
+        applyFontMode(mode);
+    });
+
     $(document).on("input", ".tns-platform-enabled", function () {
         const platform = $(this).closest(".tns-platform-block").data("platform");
         getSettings().platforms[platform].enabled = Boolean($(this).prop("checked"));
@@ -126,6 +140,7 @@ export function bindSettingsHandlers() {
         const platform = $(this).closest(".tns-platform-block").data("platform");
         getSettings().platforms[platform].docsInPrompt = Boolean($(this).prop("checked"));
         saveSettings();
+        renderPlatformAlbums(platform); // เตือน/เลิกเตือนสด ถ้ายังไม่มีอัลบั้มถูกเลือก
         updateTokenSummary();
     });
 
@@ -137,6 +152,7 @@ export function bindSettingsHandlers() {
         if (this.checked && idx === -1) list.push(albumId);
         else if (!this.checked && idx !== -1) list.splice(idx, 1);
         saveSettings();
+        renderPlatformAlbums(platform); // อัปเดตคำเตือนสด (หายไปทันทีที่เลือกอัลบั้มแรก)
         updateTokenSummary();
     });
 

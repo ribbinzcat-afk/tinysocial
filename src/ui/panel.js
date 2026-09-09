@@ -371,9 +371,20 @@ function bindProfileEvents($panel) {
         setProfileField(scope, key, { displayName: $(this).val() });
         scheduleRebuildInjection();
     });
-    $panel.on("input change", ".tns-p-handle", function () {
+    $panel.on("input", ".tns-p-handle", function () {
         const { scope, key } = currentScopeKey($(this).closest(".tns-profile-form"));
         setProfileField(scope, key, { handle: $(this).val() });
+        scheduleRebuildInjection();
+    });
+    // เติม "@" ให้อัตโนมัติตอนแก้เสร็จ (blur) เท่านั้น — ไม่แทรกทุกตัวอักษรระหว่างพิมพ์ ไม่งั้นรบกวนตอนลบ/พิมพ์ใหม่
+    $panel.on("change", ".tns-p-handle", function () {
+        let value = $(this).val().trim();
+        if (value && !value.startsWith("@")) {
+            value = `@${value}`;
+            $(this).val(value);
+        }
+        const { scope, key } = currentScopeKey($(this).closest(".tns-profile-form"));
+        setProfileField(scope, key, { handle: value });
         scheduleRebuildInjection();
     });
     $panel.on("input change", ".tns-p-bio", function () {

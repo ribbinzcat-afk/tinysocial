@@ -50,6 +50,7 @@ export const defaultSettings = {
         activeTab: "library",
         activeAlbumId: null,
         loadWebFonts: true,
+        fontMode: "custom", // "custom" = Sarabun/Kanit ของ TinySocial เอง | "system" = ตามธีม ST / Font Manager (var(--mainFontFamily))
     },
 };
 

@@ -4,7 +4,7 @@ import { extensionName, extensionFolderPath, getSettings, sweepIntegrity, rename
 import { togglePanel, refreshPanelIfOpen } from "./src/ui/panel.js";
 import { loadSettingsUi, bindSettingsHandlers, syncWandButtonVisibility, WAND_BUTTON_ID } from "./src/ui/settings.js";
 import { renderAll, queueRender, teardownAllMessages } from "./src/inject.js";
-import { invalidateThemeCache } from "./src/theme.js";
+import { invalidateThemeCache, applyFontMode } from "./src/theme.js";
 import { scheduleRebuildInjection } from "./src/promptbuild.js";
 
 /** เพิ่มปุ่มลัดในเมนูไม้กายสิทธิ์ (#extensionsMenu) — extension third-party ไม่มี container จองไว้ให้ */
@@ -71,6 +71,7 @@ jQuery(async () => {
         mountWandButton();
 
         applyFonts();
+        applyFontMode(getSettings().ui.fontMode);
         setupChatObserver();
         onGenericRefresh(); // กวาดข้อความที่มีอยู่แล้วตอนโหลดหน้า
 

@@ -33,3 +33,12 @@ export function resolveTheme(platformTheme) {
     if (platformTheme === "auto") return isStDark() ? "dark" : "light";
     return platformTheme === "light" ? "light" : "dark";
 }
+
+/**
+ * สลับฟอนต์การ์ดทั้งหมดระหว่าง Sarabun/Kanit เดิม กับตามธีม ST (var(--mainFontFamily) — Font Manager extension
+ * หรือธีมของผู้ใช้เขียนทับตัวแปรนี้อยู่แล้ว) ทำผ่าน class บน body ล้วนๆ ไม่ต้อง re-render การ์ดที่มีอยู่ในแชท
+ * @param {"custom"|"system"} mode
+ */
+export function applyFontMode(mode) {
+    document.body.classList.toggle("tinysocial-font-system", mode === "system");
+}

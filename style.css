@@ -1,3 +1,10 @@
+/* ฟอนต์การ์ด: ค่าเริ่มต้นคง Sarabun/Kanit เดิม (ทุกจุดอ้างอิง var(--tinysocial-font-stack, 'Sarabun',...) ตัวเดียวกัน)
+   ผู้ใช้เลือก "ตามธีมระบบ" ในหน้า settings ได้ (src/theme.js: applyFontMode) → ไปทับด้วย --mainFontFamily ซึ่งเป็นตัวแปร
+   ที่ Font Manager extension (หรือธีม ST เอง) เขียนทับไว้อยู่แล้ว ไม่ต้องรู้จัก Font Manager โดยตรงเลย */
+body.tinysocial-font-system {
+    --tinysocial-font-stack: var(--mainFontFamily, sans-serif);
+}
+
 /* ปุ่มใน settings/panel ของ extension นี้กว้างพอดีเนื้อหาเสมอ — ".menu_button" ของ core ใช้
    "width: min-content" ซึ่งบีบข้อความไทยยาวๆ ให้ตัดบรรทัดดูอึดอัด */
 .tinysocial-settings .menu_button,
@@ -466,6 +473,12 @@
     opacity: 0.8;
     margin: 8px 0 4px;
 }
+.tns-album-warning {
+    color: #e17055;
+    opacity: 1;
+    font-size: 0.85em;
+    margin: 4px 0 8px;
+}
 .tns-album-check-row {
     display: flex;
     align-items: center;
@@ -520,6 +533,13 @@
 .tinysocial-text {
     margin: 4px 0;
 }
+/* extension อื่นที่จัดย่อหน้าให้ prose ในแชท (เช่น tinymobile) มักใช้ "#chat .mes_text p { text-indent: X% !important; }"
+   ซึ่งชนกับ <p> ในการ์ดของเราเองเพราะเป็นลูกของ .mes_text เหมือนกัน ต้อง !important + specificity สูงกว่าเพื่อสู้กลับ
+   ((1,2,1) ชนะ (1,1,1) ของเขา) — การ์ดของเราไม่ใช่ prose ไม่ควรมีการเยื้องบรรทัดแรกไม่ว่ากรณีใด */
+#chat .mes_text [class^="tinysocial-"] p,
+#chat .mes_text [class*=" tinysocial-"] p {
+    text-indent: 0 !important;
+}
 .tinysocial-placeholder {
     height: var(--tinysocial-ph-h, 200px);
     border-radius: 12px;
@@ -566,7 +586,7 @@
     color: var(--x-fg);
     border: 1px solid var(--x-border);
     border-radius: 12px;
-    font-family: 'Sarabun', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: var(--tinysocial-font-stack, 'Sarabun', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif);
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
 }
 .tinysocial-x-head {
@@ -634,11 +654,16 @@
     overflow: hidden;
     border: 1px solid var(--x-border);
     margin-bottom: 10px;
+    background-color: var(--x-border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 .tinysocial-x-media img {
     width: 100%;
-    max-height: 320px;
-    object-fit: cover;
+    height: auto;
+    max-height: 400px;
+    object-fit: contain;
     display: block;
 }
 .tinysocial-x-actions {
@@ -660,6 +685,8 @@
 /* =====================================================================
    แชท (LINE-like) — กรอบมือถือ + ฟอง
    ===================================================================== */
+/* สีฟองฝั่งผู้ใช้ #e3f2fd/#333 ตรงกับต้นฉบับ regex-social-media-ui-set.json (สคริปต์ "Chat ฝั่ง User" ฯลฯ)
+   — ของเดิมที่เคยใช้เขียวแบบ LINE เป็นการตีความเอาเองที่คลาดจากต้นฉบับ แก้กลับให้ตรงตามที่ผู้ใช้ยืนยัน */
 .tinysocial-chat-thread[data-tinysocial-theme="light"],
 .tinysocial-chat-notif[data-tinysocial-theme="light"] {
     --chat-bg: #ffffff;
@@ -667,8 +694,8 @@
     --chat-sub: #888888;
     --chat-bubble-char-bg: #f1f0f0;
     --chat-bubble-char-fg: #333333;
-    --chat-bubble-user-bg: #06c755;
-    --chat-bubble-user-fg: #ffffff;
+    --chat-bubble-user-bg: #e3f2fd;
+    --chat-bubble-user-fg: #333333;
     --chat-border: rgba(0, 0, 0, 0.08);
     --chat-card-bg: rgba(255, 255, 255, 0.9);
 }
@@ -679,8 +706,8 @@
     --chat-sub: #9aa0a6;
     --chat-bubble-char-bg: #262b30;
     --chat-bubble-char-fg: #e8e8e8;
-    --chat-bubble-user-bg: #06c755;
-    --chat-bubble-user-fg: #ffffff;
+    --chat-bubble-user-bg: #264a73;
+    --chat-bubble-user-fg: #e8f2ff;
     --chat-border: rgba(255, 255, 255, 0.08);
     --chat-card-bg: rgba(20, 22, 25, 0.92);
 }
@@ -690,7 +717,7 @@
     width: 100%;
     box-sizing: border-box;
     margin: 14px auto;
-    font-family: 'Sarabun', 'Kanit', sans-serif;
+    font-family: var(--tinysocial-font-stack, 'Sarabun', 'Kanit', sans-serif);
     background-color: var(--chat-bg);
     border: 1px solid var(--chat-border);
     border-radius: 14px;
@@ -1023,7 +1050,7 @@
     width: 100%;
     box-sizing: border-box;
     margin: 14px auto;
-    font-family: 'Sarabun', 'Kanit', sans-serif;
+    font-family: var(--tinysocial-font-stack, 'Sarabun', 'Kanit', sans-serif);
     background-color: var(--chat-card-bg);
     border: 1px solid var(--chat-border);
     border-radius: 16px;
@@ -1136,7 +1163,7 @@
     border: 1px solid var(--ig-border);
     border-radius: 10px;
     overflow: hidden;
-    font-family: 'Sarabun', -apple-system, sans-serif;
+    font-family: var(--tinysocial-font-stack, 'Sarabun', -apple-system, sans-serif);
     box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
 }
 .tinysocial-ig-head {
@@ -1179,20 +1206,29 @@
     color: var(--ig-fg);
     flex-shrink: 0;
 }
+/* ไม่บังคับสี่เหลี่ยมจัตุรัสแล้ว (เดิม aspect-ratio:1/1 + object-fit:cover ตัดภาพแนวนอน/แนวตั้งทิ้งไปเยอะ)
+   ปล่อยให้กล่องยืดตามสัดส่วนภาพจริง โชว์เต็มภาพเสมอ จำกัดแค่ความสูงสูงสุดกันภาพแนวตั้งสุดโต่งดันการ์ดยาวเกิน */
 .tinysocial-ig-media {
     width: 100%;
-    aspect-ratio: 1 / 1;
+    min-height: 160px;
+    max-height: 500px;
     background-color: var(--ig-border);
     overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 .tinysocial-ig-media img {
     width: 100%;
-    height: 100%;
-    object-fit: cover;
+    height: auto;
+    max-height: 500px;
+    object-fit: contain;
     display: block;
 }
 .tinysocial-ig-media .tinysocial-placeholder {
+    width: 100%;
     height: 100%;
+    min-height: 160px;
     border-radius: 0;
     border: none;
 }
@@ -1272,7 +1308,7 @@
     overflow: hidden;
     background-color: var(--ig-bg);
     box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
-    font-family: 'Sarabun', -apple-system, sans-serif;
+    font-family: var(--tinysocial-font-stack, 'Sarabun', -apple-system, sans-serif);
 }
 .tinysocial-ig-story-media {
     position: absolute;
