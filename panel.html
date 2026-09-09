@@ -1,0 +1,71 @@
+<div id="tinysocialPanel" class="draggable tns-panel">
+    <div class="tns-panel-header flex-container">
+        <div id="tinysocialPanelheader" class="fa-solid fa-grip drag-grabber tns-drag-grabber" title="ลากเพื่อย้ายตำแหน่ง"></div>
+        <div class="tns-panel-title"><i class="fa-solid fa-images"></i> TinySocial</div>
+        <div class="tns-panel-tokens" id="tns-panel-tokens" title="โทเคนที่ส่งให้ AI ตอนนี้"></div>
+        <div id="tinysocialPanelClose" class="fa-solid fa-circle-xmark dragClose tns-panel-close" title="ปิด"></div>
+    </div>
+
+    <div class="tns-panel-tabs">
+        <div class="tns-tab-btn interactable" data-tab="library" tabindex="0"><i class="fa-solid fa-image"></i> คลังรูป</div>
+        <div class="tns-tab-btn interactable" data-tab="albums" tabindex="0"><i class="fa-solid fa-layer-group"></i> อัลบั้ม</div>
+        <div class="tns-tab-btn interactable" data-tab="profiles" tabindex="0"><i class="fa-solid fa-id-card"></i> โปรไฟล์</div>
+    </div>
+
+    <div class="tns-panel-body scrollY">
+
+        <!-- ================= คลังรูป ================= -->
+        <div class="tns-tab-pane" data-pane="library">
+            <div id="tns-dropzone" class="tns-dropzone">
+                <i class="fa-solid fa-cloud-arrow-up"></i>
+                <div>ลากรูปมาวางตรงนี้ หรือ</div>
+                <div class="tns-upload-row">
+                    <button id="tns-upload-photo" type="button" class="menu_button"><i class="fa-solid fa-image"></i> อัปโหลดเป็นภาพถ่าย</button>
+                    <button id="tns-upload-sticker" type="button" class="menu_button"><i class="fa-solid fa-face-smile"></i> อัปโหลดเป็นสติกเกอร์</button>
+                </div>
+                <input id="tns-file-input" type="file" accept="image/*" multiple hidden>
+            </div>
+
+            <div class="tns-row tns-lib-toolbar">
+                <div class="tns-filter-group">
+                    <button class="tns-filter-btn tns-filter-active interactable" data-kind="">ทั้งหมด</button>
+                    <button class="tns-filter-btn interactable" data-kind="photo">ภาพถ่าย</button>
+                    <button class="tns-filter-btn interactable" data-kind="sticker">สติกเกอร์</button>
+                </div>
+                <span id="tns-lib-count" class="tns-hint"></span>
+            </div>
+
+            <div class="tns-row tns-lib-ai-row">
+                <label>Connection Profile</label>
+                <select id="tns-lib-profile" class="text_pole"></select>
+            </div>
+            <div class="tns-row tns-upload-row">
+                <button id="tns-describe-all" type="button" class="menu_button"><i class="fa-solid fa-wand-magic-sparkles"></i> บรรยายรูปที่ยังไม่มีคำอธิบายทั้งหมด</button>
+            </div>
+
+            <div id="tns-image-grid" class="tns-image-grid"></div>
+        </div>
+
+        <!-- ================= อัลบั้ม ================= -->
+        <div class="tns-tab-pane" data-pane="albums" hidden>
+            <div class="tns-row tns-upload-row">
+                <button id="tns-new-album-photo" type="button" class="menu_button"><i class="fa-solid fa-plus"></i> อัลบั้มภาพถ่ายใหม่</button>
+                <button id="tns-new-album-sticker" type="button" class="menu_button"><i class="fa-solid fa-plus"></i> อัลบั้มสติกเกอร์ใหม่</button>
+            </div>
+            <div id="tns-album-list" class="tns-album-list"></div>
+        </div>
+
+        <!-- ================= โปรไฟล์ ================= -->
+        <div class="tns-tab-pane" data-pane="profiles" hidden>
+            <div class="tns-profile-block" id="tns-profile-character" hidden>
+                <div class="tns-section-heading" id="tns-profile-character-label">ตัวละคร</div>
+                <div class="tns-profile-form" data-scope="character"></div>
+            </div>
+            <div class="tns-profile-block" id="tns-profile-persona" hidden>
+                <div class="tns-section-heading" id="tns-profile-persona-label">Persona</div>
+                <div class="tns-profile-form" data-scope="persona"></div>
+            </div>
+            <p id="tns-profile-empty" class="tns-hint" hidden>เปิดแชทกับตัวละครก่อน ถึงจะตั้งโปรไฟล์ได้</p>
+        </div>
+    </div>
+</div>

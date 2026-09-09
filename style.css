@@ -1,0 +1,1341 @@
+/* ปุ่มใน settings/panel ของ extension นี้กว้างพอดีเนื้อหาเสมอ — ".menu_button" ของ core ใช้
+   "width: min-content" ซึ่งบีบข้อความไทยยาวๆ ให้ตัดบรรทัดดูอึดอัด */
+.tinysocial-settings .menu_button,
+.tns-panel .menu_button {
+    width: auto;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+/* ---------- ดรอเวอร์ตั้งค่า (หน้า Extensions) ---------- */
+.tinysocial-settings .tns-hint {
+    opacity: 0.75;
+    font-size: 0.9em;
+    margin: 4px 0 8px;
+}
+.tinysocial-settings .tns-section-title {
+    font-weight: bold;
+    margin: 4px 0 6px;
+}
+.tinysocial-settings .tns-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin: 4px 0;
+}
+.tinysocial-settings .tns-row label {
+    flex: 1;
+}
+.tinysocial-settings .tns-row select,
+.tinysocial-settings .tns-row input[type="number"] {
+    max-width: 180px;
+}
+.tinysocial-settings hr {
+    border-color: var(--SmartThemeBorderColor);
+    margin: 10px 0;
+}
+.tinysocial-settings > .inline-drawer > .inline-drawer-content > button {
+    margin: 6px 0;
+}
+
+/* ---------- แผงลอย ---------- */
+.tns-panel {
+    width: min(900px, 96vw);
+    max-height: 90dvh;
+    display: none;
+    flex-direction: column;
+    background-color: var(--SmartThemeBlurTintColor);
+    border: 1px solid var(--SmartThemeBorderColor);
+    border-radius: 10px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+}
+.tns-panel-header {
+    position: relative;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 8px;
+    cursor: default;
+    background-color: var(--SmartThemeBlurTintColor);
+    border-bottom: 1px solid var(--SmartThemeBorderColor);
+    border-radius: 10px 10px 0 0;
+}
+/* ดึง ".drag-grabber" ของ core (ปกติ position:absolute + display:none จนกว่าจะเปิดโหมด Move UI)
+   กลับมาเรียงในแถวหัวข้อปกติแทนที่จะลอยมุมขวาบน — ต้องใช้ id selector ให้ชนะ specificity ของ core */
+#tinysocialPanelheader {
+    position: static;
+    cursor: grab;
+    padding: 4px;
+    min-width: 32px;
+    min-height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.tns-panel-title {
+    flex: 1;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.tns-panel-tokens {
+    font-size: 0.85em;
+    opacity: 0.7;
+}
+.tns-panel-close {
+    cursor: pointer;
+    padding: 4px;
+    min-width: 32px;
+    min-height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.tns-panel-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    padding: 6px 8px;
+    border-bottom: 1px solid var(--SmartThemeBorderColor);
+}
+.tns-tab-btn {
+    padding: 6px 12px;
+    min-height: 32px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    border-radius: 8px;
+    cursor: pointer;
+    opacity: 0.7;
+}
+.tns-tab-btn:hover {
+    opacity: 1;
+    background-color: var(--white30a);
+}
+.tns-tab-btn.tns-tab-active {
+    opacity: 1;
+    background-color: var(--SmartThemeQuoteColor, var(--white30a));
+    font-weight: bold;
+}
+
+.tns-panel-body {
+    padding: 10px 14px;
+    overflow-y: auto;
+}
+.tns-tab-pane[hidden] {
+    display: none;
+}
+
+.tns-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin: 6px 0;
+}
+.tns-row > label {
+    flex-shrink: 0;
+    min-width: 110px;
+}
+.tns-row input.text_pole,
+.tns-row select.text_pole,
+.tns-row textarea.text_pole {
+    flex: 1;
+    min-width: 0;
+}
+.tns-hint {
+    opacity: 0.7;
+    font-size: 0.9em;
+}
+.tns-upload-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+    margin-top: 8px;
+}
+.tns-section-heading {
+    font-weight: bold;
+    margin: 10px 0 4px;
+    padding-bottom: 4px;
+    border-bottom: 1px solid var(--SmartThemeBorderColor);
+}
+
+/* ---------- คลังรูป ---------- */
+.tns-dropzone {
+    border: 2px dashed var(--SmartThemeBorderColor);
+    border-radius: 10px;
+    padding: 18px 10px;
+    text-align: center;
+    opacity: 0.85;
+    margin-bottom: 10px;
+}
+.tns-dropzone i {
+    font-size: 1.6em;
+    display: block;
+    margin-bottom: 6px;
+}
+.tns-dropzone-active {
+    opacity: 1;
+    border-color: var(--SmartThemeQuoteColor, var(--golden));
+    background-color: var(--black30a);
+}
+
+.tns-lib-toolbar {
+    margin: 4px 0 10px;
+}
+.tns-filter-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+.tns-filter-btn {
+    padding: 4px 10px;
+    min-height: 32px;
+    border-radius: 8px;
+    cursor: pointer;
+    border: 1px solid var(--SmartThemeBorderColor);
+    background: transparent;
+    color: inherit;
+    opacity: 0.75;
+}
+.tns-filter-btn.tns-filter-active {
+    opacity: 1;
+    background-color: var(--SmartThemeQuoteColor, var(--white30a));
+    font-weight: bold;
+}
+
+.tns-image-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 12px;
+}
+.tns-img-card {
+    border: 1px solid var(--SmartThemeBorderColor);
+    border-radius: 8px;
+    padding: 6px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+.tns-img-thumbwrap {
+    position: relative;
+    aspect-ratio: 1 / 1;
+    border-radius: 6px;
+    overflow: hidden;
+    background-color: var(--black30a);
+}
+.tns-panel .tns-img-thumbwrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+.tns-img-del {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    min-width: 28px;
+    min-height: 28px;
+    border-radius: 50%;
+    background-color: rgba(0, 0, 0, 0.6);
+    color: #fff;
+    border: none;
+    cursor: pointer;
+}
+.tns-img-kind {
+    position: absolute;
+    bottom: 4px;
+    left: 4px;
+    font-size: 0.75em;
+    padding: 2px 6px;
+    border-radius: 6px;
+    background-color: rgba(0, 0, 0, 0.6);
+    color: #fff;
+    cursor: pointer;
+    border: none;
+}
+.tns-img-slug {
+    font-family: monospace;
+    font-size: 0.85em;
+    cursor: pointer;
+    opacity: 0.9;
+    word-break: break-all;
+}
+.tns-img-name {
+    font-size: 0.85em;
+    cursor: pointer;
+    opacity: 0.75;
+    word-break: break-word;
+}
+.tns-img-desc {
+    font-size: 0.8em;
+    min-height: 44px;
+    resize: vertical;
+}
+.tns-img-describe-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.tns-img-describe-row .menu_button {
+    flex: 1;
+    min-height: 30px;
+    font-size: 0.78em;
+    padding: 2px 8px;
+    white-space: nowrap;
+}
+.tns-img-ai-badge {
+    flex-shrink: 0;
+    font-size: 0.65em;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 6px;
+    background: linear-gradient(135deg, #a29bfe, #6c5ce7);
+    color: #fff;
+}
+.tns-lib-ai-row {
+    margin-top: 10px;
+}
+
+/* ---------- อัลบั้ม ---------- */
+.tns-album-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.tns-album-card {
+    border: 1px solid var(--SmartThemeBorderColor);
+    border-radius: 8px;
+    padding: 8px;
+}
+.tns-album-head {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+.tns-album-name {
+    font-weight: bold;
+    cursor: pointer;
+    flex: 1;
+    min-width: 80px;
+}
+.tns-album-kind,
+.tns-album-count {
+    font-size: 0.8em;
+    opacity: 0.7;
+}
+.tns-album-del {
+    min-width: 32px;
+    min-height: 32px;
+    background: transparent;
+    border: none;
+    color: inherit;
+    cursor: pointer;
+    opacity: 0.7;
+}
+.tns-album-del:hover {
+    opacity: 1;
+}
+.tns-album-members {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 8px 0;
+}
+.tns-album-member {
+    position: relative;
+    width: 52px;
+    height: 52px;
+    border-radius: 6px;
+    overflow: hidden;
+}
+.tns-panel .tns-album-member img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+.tns-album-member-del {
+    position: absolute;
+    top: 0;
+    right: 0;
+    min-width: 20px;
+    min-height: 20px;
+    background-color: rgba(0, 0, 0, 0.7);
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    font-size: 0.7em;
+}
+.tns-album-picker {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    max-height: 240px;
+    overflow-y: auto;
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid var(--SmartThemeBorderColor);
+}
+/* ต้อง reassert [hidden] ทุกครั้งที่ตั้ง display ไม่ใช่ none บน element เดียวกัน ไม่งั้น picker จะโชว์ตั้งแต่เปิดครั้งแรก */
+.tns-album-picker[hidden] {
+    display: none;
+}
+.tns-picker-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 32px;
+    cursor: pointer;
+}
+.tns-panel .tns-picker-row img {
+    width: 28px;
+    height: 28px;
+    object-fit: cover;
+    border-radius: 4px;
+}
+.tns-picker-row span {
+    font-family: monospace;
+    font-size: 0.85em;
+}
+
+/* ---------- โปรไฟล์ ---------- */
+.tns-avatar-row {
+    align-items: flex-start;
+}
+.tns-avatar-picker {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+    min-width: 0;
+}
+/* ต้องชนะ core ".draggable img { width:100%; height:100% }" (แผงของเรามี class "draggable") — เพิ่ม specificity ด้วย .tns-panel */
+.tns-panel .tns-avatar-preview {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+    background-color: var(--black30a);
+}
+
+@media screen and (max-width: 768px) {
+    .tns-panel {
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        width: 100vw !important;
+        height: 100dvh !important;
+        max-height: 100dvh !important;
+        max-width: 100vw !important;
+        border-radius: 0;
+    }
+    .tns-panel-body {
+        max-height: calc(100dvh - 96px);
+    }
+    .tns-image-grid {
+        grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+    }
+    .tns-row {
+        flex-wrap: wrap;
+    }
+    .tns-row > label {
+        min-width: 100%;
+    }
+}
+
+/* =====================================================================
+   บล็อกแพลตฟอร์มในหน้า settings
+   ===================================================================== */
+.tinysocial-settings .tns-platform-block {
+    border: 1px solid var(--SmartThemeBorderColor);
+    border-radius: 8px;
+    padding: 8px 10px;
+    margin: 6px 0;
+}
+.tinysocial-settings .tns-platform-block .tns-row {
+    margin-top: 4px;
+}
+.tns-album-check-title {
+    font-size: 0.85em;
+    opacity: 0.8;
+    margin: 8px 0 4px;
+}
+.tns-album-check-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin: 2px 0;
+}
+.tns-album-check-row small {
+    opacity: 0.65;
+}
+
+.tns-prompt-editor {
+    border: 1px solid var(--SmartThemeBorderColor);
+    border-radius: 8px;
+    padding: 8px;
+    margin: 8px 0;
+}
+.tns-prompt-editor-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 6px;
+}
+.tns-prompt-editor-head label {
+    font-weight: 600;
+    font-size: 0.9em;
+}
+.tns-prompt-editor-head .menu_button {
+    min-height: 28px;
+    padding: 2px 10px;
+    font-size: 0.85em;
+}
+.tns-prompt-textarea {
+    width: 100%;
+    box-sizing: border-box;
+    font-family: monospace;
+    font-size: 0.8em;
+    resize: vertical;
+}
+.tinysocial-preview-pre {
+    white-space: pre-wrap;
+    word-break: break-word;
+    text-align: left;
+    font-size: 0.85em;
+    max-height: 60vh;
+    overflow-y: auto;
+}
+
+/* =====================================================================
+   การ์ดที่แทรกในแชท — ฐานร่วม
+   ===================================================================== */
+.tinysocial-text {
+    margin: 4px 0;
+}
+.tinysocial-placeholder {
+    height: var(--tinysocial-ph-h, 200px);
+    border-radius: 12px;
+    border: 1px dashed rgba(128, 128, 128, 0.5);
+    background: rgba(128, 128, 128, 0.08);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    color: rgba(128, 128, 128, 0.9);
+    font-size: 13px;
+    font-style: italic;
+    text-align: center;
+    padding: 12px;
+    box-sizing: border-box;
+}
+.tinysocial-placeholder i {
+    font-size: 1.4em;
+}
+
+/* =====================================================================
+   X / Twitter
+   ===================================================================== */
+.tinysocial-x-card[data-tinysocial-theme="dark"] {
+    --x-bg: #000000;
+    --x-fg: #E7E9EA;
+    --x-sub: #71767B;
+    --x-border: #2F3336;
+}
+.tinysocial-x-card[data-tinysocial-theme="light"] {
+    --x-bg: #FFFFFF;
+    --x-fg: #0F1419;
+    --x-sub: #536471;
+    --x-border: #EFF3F4;
+}
+.tinysocial-x-card {
+    max-width: 450px;
+    width: 100%;
+    box-sizing: border-box;
+    margin: 12px auto;
+    padding: 12px 16px;
+    background-color: var(--x-bg);
+    color: var(--x-fg);
+    border: 1px solid var(--x-border);
+    border-radius: 12px;
+    font-family: 'Sarabun', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+}
+.tinysocial-x-head {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 8px;
+}
+.tinysocial-x-avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    object-fit: cover;
+}
+.tinysocial-x-avatar-fallback {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #F57C00;
+    color: #fff;
+    font-weight: 700;
+    font-size: 16px;
+}
+.tinysocial-x-headtext {
+    flex: 1;
+    min-width: 0;
+}
+.tinysocial-x-names {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 4px;
+    font-size: 14px;
+}
+.tinysocial-x-name {
+    font-weight: 700;
+    color: var(--x-fg);
+}
+.tinysocial-x-verified {
+    color: #1D9BF0;
+    font-size: 0.9em;
+}
+.tinysocial-x-handle,
+.tinysocial-x-time {
+    color: var(--x-sub);
+}
+.tinysocial-x-dot {
+    color: var(--x-sub);
+}
+.tinysocial-x-more {
+    color: var(--x-sub);
+    flex-shrink: 0;
+}
+.tinysocial-x-text {
+    margin: 0 0 10px;
+    font-size: 15px;
+    line-height: 1.4;
+    color: var(--x-fg);
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+.tinysocial-x-media {
+    border-radius: 14px;
+    overflow: hidden;
+    border: 1px solid var(--x-border);
+    margin-bottom: 10px;
+}
+.tinysocial-x-media img {
+    width: 100%;
+    max-height: 320px;
+    object-fit: cover;
+    display: block;
+}
+.tinysocial-x-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: var(--x-sub);
+    font-size: 13px;
+}
+.tinysocial-x-actions span {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.tinysocial-x-like i {
+    color: inherit;
+}
+
+/* =====================================================================
+   แชท (LINE-like) — กรอบมือถือ + ฟอง
+   ===================================================================== */
+.tinysocial-chat-thread[data-tinysocial-theme="light"],
+.tinysocial-chat-notif[data-tinysocial-theme="light"] {
+    --chat-bg: #ffffff;
+    --chat-fg: #2d3436;
+    --chat-sub: #888888;
+    --chat-bubble-char-bg: #f1f0f0;
+    --chat-bubble-char-fg: #333333;
+    --chat-bubble-user-bg: #06c755;
+    --chat-bubble-user-fg: #ffffff;
+    --chat-border: rgba(0, 0, 0, 0.08);
+    --chat-card-bg: rgba(255, 255, 255, 0.9);
+}
+.tinysocial-chat-thread[data-tinysocial-theme="dark"],
+.tinysocial-chat-notif[data-tinysocial-theme="dark"] {
+    --chat-bg: #0f1216;
+    --chat-fg: #e8e8e8;
+    --chat-sub: #9aa0a6;
+    --chat-bubble-char-bg: #262b30;
+    --chat-bubble-char-fg: #e8e8e8;
+    --chat-bubble-user-bg: #06c755;
+    --chat-bubble-user-fg: #ffffff;
+    --chat-border: rgba(255, 255, 255, 0.08);
+    --chat-card-bg: rgba(20, 22, 25, 0.92);
+}
+
+.tinysocial-chat-thread {
+    max-width: 400px;
+    width: 100%;
+    box-sizing: border-box;
+    margin: 14px auto;
+    font-family: 'Sarabun', 'Kanit', sans-serif;
+    background-color: var(--chat-bg);
+    border: 1px solid var(--chat-border);
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+}
+.tinysocial-chat-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 14px;
+    background-color: var(--chat-card-bg);
+    border-bottom: 1px solid var(--chat-border);
+}
+.tinysocial-chat-head-name {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--chat-fg);
+}
+.tinysocial-chat-head-status {
+    font-size: 11px;
+    color: #00b894;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+.tinysocial-chat-dot {
+    width: 6px;
+    height: 6px;
+    background-color: #00b894;
+    border-radius: 50%;
+    display: inline-block;
+}
+.tinysocial-chat-title {
+    padding: 8px 14px;
+    text-align: center;
+    font-weight: 600;
+    font-size: 13px;
+    color: var(--chat-fg);
+    border-bottom: 1px solid var(--chat-border);
+}
+.tinysocial-chat-body {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 14px;
+}
+.tinysocial-chat-row {
+    display: flex;
+    flex-direction: column;
+    max-width: 78%;
+}
+.tinysocial-chat-row-left {
+    align-items: flex-start;
+    align-self: flex-start;
+}
+.tinysocial-chat-row-right {
+    align-items: flex-end;
+    align-self: flex-end;
+}
+.tinysocial-chat-namelabel {
+    font-size: 11px;
+    color: var(--chat-sub);
+    margin-bottom: 2px;
+    padding: 0 5px;
+}
+.tinysocial-chat-timelabel {
+    font-size: 10px;
+    color: var(--chat-sub);
+    margin-top: 3px;
+    padding: 0 5px;
+}
+.tinysocial-chat-bubble {
+    padding: 9px 13px;
+    font-size: 14px;
+    line-height: 1.4;
+    border-radius: 15px 15px 15px 4px;
+    background-color: var(--chat-bubble-char-bg);
+    color: var(--chat-bubble-char-fg);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+    word-break: break-word;
+}
+.tinysocial-chat-bubble p {
+    margin: 0;
+}
+.tinysocial-chat-bubble-right {
+    border-radius: 15px 15px 4px 15px;
+    background-color: var(--chat-bubble-user-bg);
+    color: var(--chat-bubble-user-fg);
+}
+.tinysocial-chat-sticker img {
+    width: 120px;
+    max-width: 100%;
+    border-radius: 8px;
+    display: block;
+}
+.tinysocial-chat-imgmsg {
+    padding: 6px;
+    overflow: hidden;
+}
+.tinysocial-chat-imgmsg img {
+    width: 100%;
+    border-radius: 10px;
+    display: block;
+    margin-bottom: 4px;
+}
+.tinysocial-chat-imgmsg p {
+    padding: 4px 6px 2px;
+}
+.tinysocial-chat-voice {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 140px;
+}
+.tinysocial-chat-voicebar {
+    flex: 1;
+    height: 3px;
+    background: currentColor;
+    opacity: 0.4;
+    border-radius: 2px;
+}
+.tinysocial-chat-location {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.tinysocial-chat-location-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: rgba(0, 184, 148, 0.15);
+    color: #00b894;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+.tinysocial-chat-location-name {
+    font-weight: 600;
+    font-size: 13px;
+}
+.tinysocial-chat-location-addr {
+    font-size: 11px;
+    opacity: 0.75;
+    max-width: 180px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.tinysocial-chat-track {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 200px;
+}
+.tinysocial-chat-track-art {
+    width: 40px;
+    height: 40px;
+    border-radius: 6px;
+    overflow: hidden;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(128, 128, 128, 0.2);
+}
+.tinysocial-chat-track-art img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.tinysocial-chat-track-info {
+    flex: 1;
+    min-width: 0;
+}
+.tinysocial-chat-track-title {
+    font-weight: 600;
+    font-size: 13px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.tinysocial-chat-track-artist {
+    font-size: 11px;
+    opacity: 0.75;
+}
+.tinysocial-chat-track-play {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    border: 1px solid currentColor;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 9px;
+    flex-shrink: 0;
+}
+
+/* ---------- สลิปโอนเงิน / อั่งเปา (อยู่ในฟอง) ---------- */
+.tinysocial-chat-slip {
+    width: 220px;
+    max-width: 100%;
+    border-radius: 15px 15px 15px 4px;
+    overflow: hidden;
+    background-color: var(--chat-bubble-char-bg);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+.tinysocial-chat-row-right .tinysocial-chat-slip {
+    border-radius: 15px 15px 4px 15px;
+}
+.tinysocial-chat-slip-head {
+    padding: 14px;
+    text-align: center;
+    border-bottom: 1px dashed var(--chat-border);
+}
+.tinysocial-chat-slip-bank {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background-color: #00b894;
+    color: #fff;
+    margin: 0 auto 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 700;
+}
+.tinysocial-chat-slip-title {
+    margin: 0;
+    font-size: 12px;
+    opacity: 0.75;
+}
+.tinysocial-chat-slip-amount {
+    margin: 4px 0 0;
+    font-size: 20px;
+    font-weight: 700;
+}
+.tinysocial-chat-slip-date {
+    margin: 4px 0 0;
+    font-size: 10px;
+    opacity: 0.6;
+}
+.tinysocial-chat-slip-body {
+    padding: 12px;
+    font-size: 11px;
+}
+.tinysocial-chat-slip-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 6px;
+}
+.tinysocial-chat-slip-row span:first-child {
+    opacity: 0.6;
+}
+.tinysocial-chat-slip-row span:last-child {
+    font-weight: 600;
+}
+.tinysocial-chat-slip-note {
+    padding: 8px 12px;
+    font-size: 10px;
+    border-top: 1px solid var(--chat-border);
+    opacity: 0.85;
+}
+
+.tinysocial-chat-gift {
+    width: 200px;
+    max-width: 100%;
+    border-radius: 15px 15px 15px 4px;
+    overflow: hidden;
+}
+.tinysocial-chat-row-right .tinysocial-chat-gift {
+    border-radius: 15px 15px 4px 15px;
+}
+.tinysocial-chat-gift-closed {
+    background: linear-gradient(135deg, #d32f2f 0%, #b71c1c 100%);
+    color: #fff;
+    padding: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.tinysocial-chat-gift-icon {
+    font-size: 22px;
+    background-color: #ffb300;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+.tinysocial-chat-gift-text {
+    display: flex;
+    flex-direction: column;
+    font-size: 12px;
+}
+.tinysocial-chat-gift-text span {
+    font-weight: 600;
+    font-size: 13px;
+}
+.tinysocial-chat-gift-opened {
+    background: #fff8e1;
+    color: #795548;
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    text-align: center;
+}
+.tinysocial-chat-gift-label {
+    font-size: 12px;
+}
+.tinysocial-chat-gift-amount {
+    font-size: 18px;
+    font-weight: 700;
+    color: #d32f2f;
+}
+.tinysocial-chat-gift-note {
+    font-size: 10px;
+    margin-top: 4px;
+}
+
+/* ---------- การ์ดแจ้งเตือนเดี่ยว (call/money/noti) — ไม่ผูกกรอบมือถือ ---------- */
+.tinysocial-chat-notif {
+    max-width: 380px;
+    width: 100%;
+    box-sizing: border-box;
+    margin: 14px auto;
+    font-family: 'Sarabun', 'Kanit', sans-serif;
+    background-color: var(--chat-card-bg);
+    border: 1px solid var(--chat-border);
+    border-radius: 16px;
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
+    color: var(--chat-fg);
+}
+.tinysocial-chat-call-icon,
+.tinysocial-chat-money-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    flex-shrink: 0;
+    font-size: 15px;
+}
+.tinysocial-chat-call-voice .tinysocial-chat-call-icon,
+.tinysocial-chat-call-video .tinysocial-chat-call-icon { background: linear-gradient(135deg, #a29bfe, #6c5ce7); }
+.tinysocial-chat-call-missed .tinysocial-chat-call-icon { background: linear-gradient(135deg, #ff7675, #d63031); }
+.tinysocial-chat-call-ongoing .tinysocial-chat-call-icon { background: #55efc4; }
+.tinysocial-chat-money-in .tinysocial-chat-money-icon { background: linear-gradient(135deg, #55efc4, #00b894); }
+.tinysocial-chat-money-out .tinysocial-chat-money-icon { background: linear-gradient(135deg, #fab1a0, #e17055); }
+
+.tinysocial-chat-call-body,
+.tinysocial-chat-money-body {
+    flex: 1;
+    min-width: 0;
+}
+.tinysocial-chat-call-top,
+.tinysocial-chat-money-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 8px;
+    font-weight: 600;
+    font-size: 14px;
+}
+.tinysocial-chat-call-top small,
+.tinysocial-chat-money-top small,
+.tinysocial-chat-noti-top small {
+    font-weight: 400;
+    font-size: 11px;
+    opacity: 0.6;
+    flex-shrink: 0;
+}
+.tinysocial-chat-call-sub {
+    font-size: 12px;
+    opacity: 0.75;
+    margin-top: 2px;
+}
+.tinysocial-chat-money-sub {
+    font-size: 12px;
+    opacity: 0.85;
+    margin-top: 2px;
+    line-height: 1.4;
+}
+.tinysocial-chat-money-in .tinysocial-chat-money-sub b { color: #00b894; }
+.tinysocial-chat-money-out .tinysocial-chat-money-sub b { color: #e17055; }
+
+.tinysocial-chat-plainnoti {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 4px;
+}
+.tinysocial-chat-noti-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 8px;
+    font-size: 13px;
+}
+.tinysocial-chat-noti-text {
+    font-size: 13px;
+    opacity: 0.85;
+}
+
+/* =====================================================================
+   Instagram
+   ===================================================================== */
+.tinysocial-ig-card[data-tinysocial-theme="light"],
+.tinysocial-ig-story[data-tinysocial-theme="light"] {
+    --ig-bg: #ffffff;
+    --ig-fg: #262626;
+    --ig-sub: #8e8e8e;
+    --ig-border: #dbdbdb;
+    --ig-card-bg: rgba(255, 255, 255, 0.92);
+}
+.tinysocial-ig-card[data-tinysocial-theme="dark"],
+.tinysocial-ig-story[data-tinysocial-theme="dark"] {
+    --ig-bg: #000000;
+    --ig-fg: #f5f5f5;
+    --ig-sub: #a8a8a8;
+    --ig-border: #262626;
+    --ig-card-bg: rgba(0, 0, 0, 0.55);
+}
+
+.tinysocial-ig-card {
+    max-width: 400px;
+    width: 100%;
+    box-sizing: border-box;
+    margin: 14px auto;
+    background-color: var(--ig-bg);
+    color: var(--ig-fg);
+    border: 1px solid var(--ig-border);
+    border-radius: 10px;
+    overflow: hidden;
+    font-family: 'Sarabun', -apple-system, sans-serif;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+}
+.tinysocial-ig-head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+}
+.tinysocial-ig-avatar {
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+.tinysocial-ig-avatar-fallback {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #f58529, #dd2a7b, #8134af);
+    color: #fff;
+    font-weight: 700;
+    font-size: 13px;
+}
+.tinysocial-ig-headtext {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    line-height: 1.25;
+}
+.tinysocial-ig-name {
+    font-weight: 600;
+    font-size: 13px;
+    color: var(--ig-fg);
+}
+.tinysocial-ig-location {
+    font-size: 11px;
+    color: var(--ig-sub);
+}
+.tinysocial-ig-more {
+    color: var(--ig-fg);
+    flex-shrink: 0;
+}
+.tinysocial-ig-media {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    background-color: var(--ig-border);
+    overflow: hidden;
+}
+.tinysocial-ig-media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+.tinysocial-ig-media .tinysocial-placeholder {
+    height: 100%;
+    border-radius: 0;
+    border: none;
+}
+.tinysocial-ig-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 12px 4px;
+    font-size: 19px;
+    color: var(--ig-fg);
+}
+.tinysocial-ig-actions > span:first-child {
+    display: flex;
+    gap: 14px;
+}
+.tinysocial-ig-body {
+    padding: 4px 12px 12px;
+}
+.tinysocial-ig-likes {
+    font-weight: 600;
+    font-size: 13px;
+    margin-bottom: 4px;
+}
+.tinysocial-ig-caption {
+    font-size: 13px;
+    line-height: 1.4;
+    margin-bottom: 4px;
+    word-break: break-word;
+}
+.tinysocial-ig-caption .tinysocial-ig-name {
+    margin-right: 4px;
+}
+.tinysocial-ig-comments {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    margin-bottom: 4px;
+}
+.tinysocial-ig-comment-row {
+    font-size: 13px;
+    line-height: 1.4;
+}
+.tinysocial-ig-comment-user {
+    font-weight: 600;
+    margin-right: 4px;
+}
+.tinysocial-ig-comment-text {
+    word-break: break-word;
+}
+.tinysocial-ig-comment-meta {
+    display: flex;
+    gap: 10px;
+    font-size: 11px;
+    color: var(--ig-sub);
+    margin-top: 1px;
+}
+.tinysocial-ig-time {
+    font-size: 10px;
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+    color: var(--ig-sub);
+    margin-top: 4px;
+}
+.tinysocial-ig-comment-standalone .tinysocial-ig-body {
+    padding: 10px 12px;
+}
+
+/* ---------- IG Story ---------- */
+.tinysocial-ig-story {
+    max-width: 300px;
+    width: 100%;
+    aspect-ratio: 9 / 16;
+    box-sizing: border-box;
+    margin: 14px auto;
+    position: relative;
+    border-radius: 14px;
+    overflow: hidden;
+    background-color: var(--ig-bg);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+    font-family: 'Sarabun', -apple-system, sans-serif;
+}
+.tinysocial-ig-story-media {
+    position: absolute;
+    inset: 0;
+}
+.tinysocial-ig-story-media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+.tinysocial-ig-story-media .tinysocial-placeholder {
+    height: 100%;
+    border-radius: 0;
+    border: none;
+}
+.tinysocial-ig-story-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.55) 0%, rgba(0, 0, 0, 0) 25%, rgba(0, 0, 0, 0) 70%, rgba(0, 0, 0, 0.55) 100%);
+    padding: 10px 12px;
+    box-sizing: border-box;
+    color: #fff;
+}
+.tinysocial-ig-story-bar {
+    height: 2px;
+    background: rgba(255, 255, 255, 0.35);
+    border-radius: 2px;
+    overflow: hidden;
+    margin-bottom: 10px;
+}
+.tinysocial-ig-story-bar-fill {
+    height: 100%;
+    width: 60%;
+    background: #fff;
+}
+.tinysocial-ig-story-head {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.tinysocial-ig-story-head .tinysocial-ig-avatar {
+    border: 1px solid rgba(255, 255, 255, 0.6);
+}
+.tinysocial-ig-story-name {
+    font-weight: 600;
+    font-size: 13px;
+    flex: 1;
+    min-width: 0;
+}
+.tinysocial-ig-story-time {
+    font-size: 11px;
+    opacity: 0.85;
+}
+.tinysocial-ig-story-close {
+    opacity: 0.9;
+}
+.tinysocial-ig-story-text {
+    margin-top: auto;
+    font-size: 15px;
+    line-height: 1.4;
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
+    word-break: break-word;
+}

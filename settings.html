@@ -1,0 +1,97 @@
+<div class="tinysocial-settings">
+    <div class="inline-drawer">
+        <div class="inline-drawer-toggle inline-drawer-header">
+            <b>TinySocial 📱</b>
+            <div class="inline-drawer-icon fa-solid fa-circle-chevron-down down"></div>
+        </div>
+        <div class="inline-drawer-content">
+            <label class="checkbox_label">
+                <input id="tns-enabled" type="checkbox">
+                <span>เปิดใช้งาน TinySocial</span>
+            </label>
+            <p class="tns-hint">แทรกการ์ด X / Instagram / แชท เข้าไปในข้อความของ AI โดยอัตโนมัติ — จัดการคลังรูป อัลบั้ม และโปรไฟล์ได้ในแผงลอย</p>
+            <button id="tns-open-panel" type="submit" class="menu_button">
+                <i class="fa-solid fa-images"></i> เปิดแผง TinySocial
+            </button>
+
+            <hr>
+            <div class="tns-row">
+                <label>Connection Profile (บรรยายรูปด้วย AI)</label>
+                <select id="tns-api-profile" class="text_pole"></select>
+            </div>
+            <p class="tns-hint">ใช้ตอนกด "บรรยายด้วย AI" ในแผง — ต้องเป็นสาย Chat Completion เท่านั้น ไม่เลือก = ใช้ค่า Image Captioning หลักของ ST (Extensions &gt; Image Captioning)</p>
+
+            <hr>
+            <div class="tns-section-title">แพลตฟอร์ม</div>
+            <p class="tns-hint">"ส่งเอกสารแท็กให้ AI" คุมทั้งเอกสารแท็ก, ข้อมูลตัวตน, และรายการรูปของแพลตฟอร์มนั้นในพรอมป์ — ปิดได้ถ้าอยากให้แสดงการ์ดในแชทอย่างเดียวโดยไม่บอก AI</p>
+
+            <div class="tns-platform-block" data-platform="x">
+                <label class="checkbox_label">
+                    <input class="tns-platform-enabled" type="checkbox">
+                    <span>X / Twitter</span>
+                </label>
+                <div class="tns-row">
+                    <label>ธีมการ์ด</label>
+                    <select class="text_pole tns-platform-theme">
+                        <option value="dark">Dark</option>
+                        <option value="light">Light</option>
+                        <option value="auto">ตามธีม ST</option>
+                    </select>
+                </div>
+                <label class="checkbox_label">
+                    <input class="tns-platform-docsinprompt" type="checkbox">
+                    <span>ส่งเอกสารแท็กให้ AI</span>
+                </label>
+                <div class="tns-platform-albums"></div>
+            </div>
+
+            <div class="tns-platform-block" data-platform="instagram">
+                <label class="checkbox_label">
+                    <input class="tns-platform-enabled" type="checkbox">
+                    <span>Instagram</span>
+                </label>
+                <div class="tns-row">
+                    <label>ธีมการ์ด</label>
+                    <select class="text_pole tns-platform-theme">
+                        <option value="dark">Dark</option>
+                        <option value="light">Light</option>
+                        <option value="auto">ตามธีม ST</option>
+                    </select>
+                </div>
+                <label class="checkbox_label">
+                    <input class="tns-platform-docsinprompt" type="checkbox">
+                    <span>ส่งเอกสารแท็กให้ AI</span>
+                </label>
+                <div class="tns-platform-albums"></div>
+            </div>
+
+            <div class="tns-platform-block" data-platform="chat">
+                <label class="checkbox_label">
+                    <input class="tns-platform-enabled" type="checkbox">
+                    <span>แชท (LINE-like)</span>
+                </label>
+                <div class="tns-row">
+                    <label>ธีมการ์ด</label>
+                    <select class="text_pole tns-platform-theme">
+                        <option value="dark">Dark</option>
+                        <option value="light">Light</option>
+                        <option value="auto">ตามธีม ST</option>
+                    </select>
+                </div>
+                <label class="checkbox_label">
+                    <input class="tns-platform-docsinprompt" type="checkbox">
+                    <span>ส่งเอกสารแท็กให้ AI</span>
+                </label>
+                <div class="tns-platform-albums"></div>
+            </div>
+
+            <hr>
+            <div class="tns-section-title">พรอมป์ที่ส่งให้ AI</div>
+            <div id="tns-token-summary" class="tns-hint">โทเคนที่ส่งให้ AI: —</div>
+            <button id="tns-preview-prompt" type="button" class="menu_button">
+                <i class="fa-solid fa-eye"></i> ดูพรอมป์ที่ส่งจริง
+            </button>
+            <div id="tns-prompt-editors"></div>
+        </div>
+    </div>
+</div>
