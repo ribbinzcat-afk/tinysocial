@@ -80,13 +80,13 @@ export function renderMessage(mesId) {
             div.className = "tinysocial-text";
             div.innerHTML = ctx.messageFormatting(run.text, mes.name, mes.is_system, mes.is_user, mesId, {}, false);
             frag.appendChild(div);
-        } else if (run.type === "chat_thread") {
-            const node = renderGroup(run.items, mes);
+        } else if (run.type === "chat_thread" || run.type === "stream_chat_thread") {
+            const node = renderGroup(run.type, run.items, mes);
             if (node) frag.appendChild(node);
         } else if (run.type === "card") {
             const node = renderCard(run, mes);
             if (node) frag.appendChild(node);
-            else if (run.raw) frag.appendChild(document.createTextNode(run.raw)); // แท็กยังไม่มี renderer (IG/stream) → คงข้อความเดิมไว้
+            else if (run.raw) frag.appendChild(document.createTextNode(run.raw)); // แท็กไม่มี renderer หรือ parse ไม่ได้ → คงข้อความเดิมไว้
         }
     }
 

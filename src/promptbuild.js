@@ -15,10 +15,15 @@ function activePlatformIds(settings) {
     return Object.entries(settings.platforms).filter(([, p]) => p.enabled && p.docsInPrompt).map(([k]) => k);
 }
 
+// "stream" ไม่มีตัวตนที่ผูกโปรไฟล์ (ผู้ชม/โดเนทเป็นชื่อที่ AI ตั้งสดๆ ไม่ผ่าน resolveProfile เลย) — บอก AI
+// ว่าตัวละครมี "stream handle" ไปก็ไม่มีความหมายอะไร จึงตัดออกจากบรรทัดตัวตนเสมอ ไม่ว่าจะเปิดแพลตฟอร์มนี้ไว้หรือไม่
+const identityLinePlatforms = (platforms) => platforms.filter((p) => p !== "stream");
+
 function buildCharProfileLine(platforms) {
-    if (!currentCharacterKey()) return "";
+    const idPlatforms = identityLinePlatforms(platforms);
+    if (!currentCharacterKey() || !idPlatforms.length) return "";
     const ctx = getContext();
-    const parts = platforms.map((p) => {
+    const parts = idPlatforms.map((p) => {
         const prof = resolveProfile(p, "char", null);
         return `${p}: ${prof.displayName} (${prof.handle})`;
     });
@@ -26,18 +31,23 @@ function buildCharProfileLine(platforms) {
 }
 
 function buildUserProfileLine(platforms) {
-    if (!currentPersonaKey()) return "";
-    const parts = platforms.map((p) => {
+    const idPlatforms = identityLinePlatforms(platforms);
+    if (!currentPersonaKey() || !idPlatforms.length) return "";
+    const parts = idPlatforms.map((p) => {
         const prof = resolveProfile(p, "user", null);
         return `${p}: ${prof.displayName} (${prof.handle})`;
     });
     return `- {{user}} → ${parts.join(", ")}`;
 }
 
-/** รวมรูปจากอัลบั้มที่ถูกเลือกส่ง (union ของ exposeAlbumIds ของทุกแพลตฟอร์มที่ active) จัดกลุ่มตามอัลบั้ม */
+/** รวมรูปจากอัลบั้มที่ถูกเลือกส่ง (union ของ exposeAlbumIds ของทุกแพลตฟอร์มที่ active) จัดกลุ่มตามอัลบั้ม
+ *  "stream" ไม่มีแท็กไหนอ้างอิงรูปเลย (ไม่มีช่องเลือกอัลบั้มในหน้า settings ด้วย) จึงตัดออกเสมอกันรกพรอมป์เปล่าๆ */
 function buildAlbumsText(settings, platforms) {
     const albumIds = new Set();
-    for (const p of platforms) for (const id of settings.platforms[p].exposeAlbumIds) albumIds.add(id);
+    for (const p of platforms) {
+        if (p === "stream") continue;
+        for (const id of settings.platforms[p].exposeAlbumIds) albumIds.add(id);
+    }
     if (!albumIds.size) return "";
 
     const albums = listAlbums().filter((a) => albumIds.has(a.id));
@@ -69,7 +79,7 @@ export function buildInjection() {
 
     for (const platform of platforms) {
         const promptId = `docs_${platform}`;
-        if (!getPromptDef(promptId)) continue; // stream ฯลฯ ที่ยังไม่มี renderer/prompt def
+        if (!getPromptDef(promptId)) continue; // เผื่ออนาคตมีแพลตฟอร์มที่ยังไม่มี prompt def ของตัวเอง
         const text = buildPlatformDocs(platform, promptId);
         if (text) sections.push({ label: `เอกสารแท็ก: ${platform}`, text });
     }

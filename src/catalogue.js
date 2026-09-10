@@ -233,15 +233,62 @@ export const TAG_DEFS = [
     { tag: "IG_STORY", platform: "instagram", card: "ig_story", primary: true, attrFields: ["img", "text", "time", "from"], bodyField: null, legacyFields: null },
     { tag: "IG_COMMENT", platform: "instagram", card: "ig_comment", primary: true, attrFields: ["user", "likes", "time"], bodyField: "text", legacyFields: null },
 
-    // ==================== Live stream (รอบ 2) — ลงทะเบียนไว้ ยังไม่มี renderer ====================
+    // ==================== Live stream ====================
+    // "name" (ไม่ใช่ "from") เพราะผู้ชม/ผู้บริจาคเป็นคนที่ AI ตั้งชื่อขึ้นสดๆ ไม่ใช่ตัวตนที่ผูกโปรไฟล์ไว้แบบ
+    // ตัวละคร/persona/NPC — ไม่ผ่าน resolveProfile() เลย จึงไม่ใช้ชื่อ "from" ที่สื่อถึงการ resolve ตัวตนแบบนั้น
 
-    { tag: "STREAM_TITLE", platform: "stream", card: null, attrFields: [], bodyField: null, legacyFields: null },
-    { tag: "STREAM_CHAT", platform: "stream", card: null, attrFields: [], bodyField: null, legacyFields: null },
-    { tag: "STREAM_DONO", platform: "stream", card: null, attrFields: [], bodyField: null, legacyFields: null },
-    { tag: "STREAM_MEMBER", platform: "stream", card: null, attrFields: [], bodyField: null, legacyFields: null },
-    { tag: "STREAM_LIKE", platform: "stream", card: null, attrFields: [], bodyField: null, legacyFields: null },
-    { tag: "STREAM_HILIGHT", platform: "stream", card: null, attrFields: [], bodyField: null, legacyFields: null },
-    { tag: "STREAM_END", platform: "stream", card: null, attrFields: [], bodyField: null, legacyFields: null },
+    { tag: "STREAM_TITLE", platform: "stream", card: "stream_title", primary: true, attrFields: ["viewers", "likes"], bodyField: "title", legacyFields: null },
+    { tag: "TITL", platform: "stream", card: "stream_title", attrFields: [], bodyField: null, legacyFields: ["title", "viewers", "likes"], legacyMap: identity },
+
+    { tag: "STREAM_COMMENT", platform: "stream", card: "stream_comment", primary: true, attrFields: ["name", "time"], bodyField: "text", legacyFields: null },
+    {
+        tag: "ALLCOM", platform: "stream", card: "stream_chat_legacy", attrFields: [], bodyField: null,
+        legacyFields: Array.from({ length: 10 }, (_, i) => [`c${i}`, `n${i}`, `t${i}`]).flat(),
+        legacyMap: (f) => {
+            const pairs = [];
+            for (let i = 0; i < 10; i++) {
+                const name = f[`n${i}`];
+                const text = f[`t${i}`];
+                if (name || text) pairs.push({ name, text });
+            }
+            return { pairs };
+        },
+    },
+
+    { tag: "STREAM_DONO", platform: "stream", card: "stream_dono", primary: true, attrFields: ["name", "amount", "time"], bodyField: "message", legacyFields: null },
+    {
+        tag: "DONO", platform: "stream", card: "stream_dono", attrFields: [], bodyField: null,
+        legacyFields: ["color", "initial", "name", "amount", "time"],
+        legacyMap: (f) => ({ name: f.name, amount: f.amount, time: f.time }),
+    },
+
+    { tag: "STREAM_MEMBER", platform: "stream", card: "stream_member", primary: true, attrFields: ["name", "time"], bodyField: null, legacyFields: null },
+    {
+        tag: "MEMBER", platform: "stream", card: "stream_member", attrFields: [], bodyField: null,
+        legacyFields: ["color", "initial", "name", "time"],
+        legacyMap: (f) => ({ name: f.name, time: f.time }),
+    },
+
+    { tag: "STREAM_LIKE", platform: "stream", card: "stream_like", primary: true, attrFields: ["name", "time"], bodyField: null, legacyFields: null },
+    {
+        tag: "LIKE", platform: "stream", card: "stream_like", attrFields: [], bodyField: null,
+        legacyFields: ["color", "name"],
+        legacyMap: (f) => ({ name: f.name }),
+    },
+
+    { tag: "STREAM_HILIGHT", platform: "stream", card: "stream_hilight", primary: true, attrFields: ["name", "time"], bodyField: "text", legacyFields: null },
+    {
+        tag: "HILIGHT", platform: "stream", card: "stream_hilight", attrFields: [], bodyField: null,
+        legacyFields: ["color", "name", "text"],
+        legacyMap: (f) => ({ name: f.name, text: f.text }),
+    },
+
+    { tag: "STREAM_END", platform: "stream", card: "stream_end", primary: true, attrFields: ["time", "duration", "followers", "views", "donations"], bodyField: null, legacyFields: null },
+    {
+        tag: "END", platform: "stream", card: "stream_end", attrFields: [], bodyField: null,
+        legacyFields: ["time", "duration", "followers", "views", "donations"],
+        legacyMap: identity,
+    },
 ];
 
 /** @type {Map<string, TagDef>} */
@@ -258,6 +305,9 @@ export const ALL_RENDERABLE_TAGS = TAG_DEFS.filter((d) => d.card).map((d) => d.t
 /** card ประเภทที่ parser ต้องรวมแท็กติดกัน (คั่นด้วย whitespace ล้วน) เป็นกรอบมือถือเดียว — ตรงข้ามกับการ์ดแจ้งเตือนเดี่ยว
  *  (chat_call/chat_money/chat_noti) ที่ต้นฉบับออกแบบให้ลอยเดี่ยวเสมอ ไม่มี name/time label แบบฟองแชท */
 export const GROUPABLE_CHAT_CARDS = new Set(["msg", "chat_head", "chat_title", "chat_slip", "chat_gift"]);
+
+/** STREAM_COMMENT ที่ติดกัน (คั่นด้วย whitespace ล้วน) รวมเป็นกล่องแชทสดเดียว เหมือนหลักการเดียวกับแชท LINE */
+export const GROUPABLE_STREAM_CARDS = new Set(["stream_comment"]);
 
 function exampleFor(def) {
     const attrsStr = def.attrFields.filter((a) => a !== "from").map((a) => `${a}="..."`).join(" ");

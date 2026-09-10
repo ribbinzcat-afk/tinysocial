@@ -1,7 +1,7 @@
 // parser.js — deps = 0. แยกข้อความดิบของ AI เป็นลำดับ run: ข้อความธรรมดา / การ์ด แล้วจัดกลุ่มแท็กแชทที่ติดกัน
 // ทำงานกับ ctx.chat[i].mes ดิบเท่านั้น — DOMPurify กิน <TWEET> ฯลฯ ไปแล้วตอนผ่าน messageFormatting() จึงอ่านจาก DOM ไม่ได้
 
-import { TAG_MAP, tagsForPlatforms, GROUPABLE_CHAT_CARDS } from "./catalogue.js";
+import { TAG_MAP, tagsForPlatforms, GROUPABLE_CHAT_CARDS, GROUPABLE_STREAM_CARDS } from "./catalogue.js";
 
 let cachedRegex = null;
 let cachedKey = null;
@@ -116,55 +116,60 @@ export function hasAnyTag(raw, enabledPlatforms) {
 }
 
 /**
- * รวมแท็กแชทที่ groupable และติดกัน (คั่นด้วย whitespace ล้วนเท่านั้น) เป็น { type:"chat_thread", items }
- * รวมแม้มีตัวเดียวก็ตาม — renderer ของ "msg"/"chat_slip"/"chat_gift" ต้องมีกรอบมือถือห่ออยู่เสมอ
+ * เก็บ run การ์ดที่ต่อเนื่องกันจาก index i (คั่นด้วย whitespace ล้วนเท่านั้น ข้อความจริงคั่น = หยุด) โดยใช้ matchFn
+ * ตัดสินว่าการ์ดแต่ละใบนับรวมด้วยหรือไม่ — ใช้ร่วมกันทั้งกลุ่มแชท/สตรีม/คอมเมนต์ IG กันโค้ดซ้ำ
+ * @returns {{items: object[], nextIndex: number}}
+ */
+function collectAdjacent(runs, startIndex, matchFn) {
+    const items = [];
+    let j = startIndex;
+    while (j < runs.length) {
+        const next = runs[j];
+        if (next.type === "text") {
+            if (next.text.trim() === "") { j++; continue; }
+            break;
+        }
+        if (next.type === "card" && matchFn(next)) {
+            items.push(next);
+            j++;
+            continue;
+        }
+        break;
+    }
+    return { items, nextIndex: j };
+}
+
+/**
+ * รวมแท็กที่ groupable และติดกันเป็นกรอบเดียว: แชท LINE (chat_thread), แชทสด (stream_chat_thread),
+ * และผูก IG_COMMENT เข้ากับ IG_POST ก่อนหน้า — รวมแม้มีตัวเดียวก็ตาม เพราะ renderer ต้องมีกรอบห่ออยู่เสมอ
  */
 export function groupRuns(runs) {
     const out = [];
     let i = 0;
     while (i < runs.length) {
         const run = runs[i];
+
         if (run.type === "card" && run.platform === "chat" && GROUPABLE_CHAT_CARDS.has(run.card)) {
-            const group = [run];
-            let j = i + 1;
-            while (j < runs.length) {
-                const next = runs[j];
-                if (next.type === "text") {
-                    if (next.text.trim() === "") { j++; continue; }
-                    break;
-                }
-                if (next.type === "card" && next.platform === "chat" && GROUPABLE_CHAT_CARDS.has(next.card)) {
-                    group.push(next);
-                    j++;
-                    continue;
-                }
-                break;
-            }
-            out.push({ type: "chat_thread", items: group });
-            i = j;
+            const { items, nextIndex } = collectAdjacent(runs, i + 1, (r) => r.platform === "chat" && GROUPABLE_CHAT_CARDS.has(r.card));
+            out.push({ type: "chat_thread", items: [run, ...items] });
+            i = nextIndex;
             continue;
         }
+
+        if (run.type === "card" && run.platform === "stream" && GROUPABLE_STREAM_CARDS.has(run.card)) {
+            const { items, nextIndex } = collectAdjacent(runs, i + 1, (r) => r.platform === "stream" && GROUPABLE_STREAM_CARDS.has(r.card));
+            out.push({ type: "stream_chat_thread", items: [run, ...items] });
+            i = nextIndex;
+            continue;
+        }
+
         if (run.type === "card" && run.card === "ig_post") {
-            // ผูก IG_COMMENT ที่ตามมาติดๆ (คั่นด้วย whitespace ล้วน) เข้ากับโพสต์ก่อนหน้า
-            const comments = [];
-            let j = i + 1;
-            while (j < runs.length) {
-                const next = runs[j];
-                if (next.type === "text") {
-                    if (next.text.trim() === "") { j++; continue; }
-                    break;
-                }
-                if (next.type === "card" && next.card === "ig_comment") {
-                    comments.push(next);
-                    j++;
-                    continue;
-                }
-                break;
-            }
+            const { items: comments, nextIndex } = collectAdjacent(runs, i + 1, (r) => r.card === "ig_comment");
             out.push({ ...run, comments });
-            i = j;
+            i = nextIndex;
             continue;
         }
+
         out.push(run);
         i++;
     }

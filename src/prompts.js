@@ -46,6 +46,12 @@ export const PROMPT_DEFS = [
         tokens: ["tags"],
     },
     {
+        id: "docs_stream",
+        label: "เอกสารแท็ก Live Stream",
+        default: "### Live stream tags\n{{tags}}\nThe \"name\" attribute is a viewer's display name you invent on the spot — it is never a bound identity, just plain text. Consecutive STREAM_COMMENT tags with nothing but whitespace between them render as one live-chat feed — write several in a row for a busy chat moment.",
+        tokens: ["tags"],
+    },
+    {
         id: "identity_block",
         label: "ข้อมูลโปรไฟล์",
         default: "### Identity\n{{char_profile}}\n{{user_profile}}",
