@@ -6,7 +6,7 @@ import { loadMovingUIState } from "../../../../../power-user.js";
 import { animation_duration } from "../../../../../../script.js";
 import { getContext } from "../../../../../extensions.js";
 
-import { extensionFolderPath, getSettings, listImages, setImageSlug, setImageFields, listAlbums, addAlbum, renameAlbum, removeAlbum, addImageToAlbum, removeImageFromAlbum, getAlbumImages, getProfile, setProfileField, imageUrlToSrc } from "../store.js";
+import { extensionFolderPath, getSettings, listImages, setImageSlug, setImageFields, listAlbums, addAlbum, renameAlbum, removeAlbum, setAlbumNote, addImageToAlbum, removeImageFromAlbum, getAlbumImages, getProfile, setProfileField, imageUrlToSrc, listNpcsForCharacter, addNpc, renameNpc, removeNpc } from "../store.js";
 import { uploadImages, deleteImage } from "../library.js";
 import { currentCharacterKey, currentPersonaKey, resolveAvatarUrl } from "../identity.js";
 import { scheduleRebuildInjection } from "../promptbuild.js";
@@ -186,7 +186,8 @@ async function describeOneImage(imageId, $btn) {
     $btn.prop("disabled", true).html('<i class="fa-solid fa-spinner fa-spin"></i> กำลังบรรยาย...');
     try {
         const profileId = getSettings().api.connectionProfileId;
-        const { text, via, promptTokens } = await describeImage(imgSrc(img.url), { profileId });
+        const maxTokens = getSettings().api.visionMaxTokens;
+        const { text, via, promptTokens } = await describeImage(imgSrc(img.url), { profileId, maxTokens });
         setImageFields(imageId, { desc: text, descSource: "ai" });
         toastr.success(`เส้นทาง: ${via === "profile" ? "Connection Profile" : "ค่าเริ่มต้นของ ST"} · พรอมป์ ${promptTokens} โทเคน`, "บรรยายสำเร็จ");
         renderLibrary();
@@ -237,6 +238,7 @@ function renderAlbums() {
                     <button class="tns-album-del interactable" title="ลบอัลบั้ม"><i class="fa-solid fa-trash"></i></button>
                 </div>
                 <div class="tns-album-members">${memberThumbs}</div>
+                <textarea class="tns-album-note text_pole" placeholder="โน้ต/คำอธิบายอัลบั้ม (เก็บไว้ดูเอง ไม่ได้ส่งให้ AI)" rows="1">${escapeHtml(album.note || "")}</textarea>
                 <button class="tns-album-manage menu_button interactable"><i class="fa-solid fa-pen"></i> จัดการรูปในอัลบั้ม</button>
                 <div class="tns-album-picker" hidden>${pickerRows}</div>
             </div>`;
@@ -273,6 +275,11 @@ function bindAlbumEvents($panel) {
         if (!(await confirmAction("ลบอัลบั้มนี้? (รูปในคลังจะไม่ถูกลบ)"))) return;
         removeAlbum(id);
         renderAlbums();
+    });
+
+    $panel.on("change", ".tns-album-note", function () {
+        const id = $(this).closest(".tns-album-card").data("id");
+        setAlbumNote(id, $(this).val());
     });
 
     $panel.on("click", ".tns-album-manage", function () {
@@ -332,6 +339,30 @@ function profileFormHtml(scope, key, fallbackLabel) {
         </div>`;
 }
 
+function npcCardHtml(entry) {
+    const label = entry.profile.displayName || entry.npcName;
+    return `
+        <div class="tns-npc-card" data-key="${escapeHtml(entry.key)}">
+            <div class="tns-npc-head">
+                <span class="tns-npc-name interactable" title="คลิกเพื่อแก้ไขชื่อ">${escapeHtml(label)}</span>
+                <button class="tns-npc-del interactable" title="ลบ NPC นี้"><i class="fa-solid fa-trash"></i></button>
+            </div>
+            <div class="tns-profile-form" data-scope="npc" data-key="${escapeHtml(entry.key)}">
+                ${profileFormHtml("npc", entry.key, label)}
+            </div>
+        </div>`;
+}
+
+function renderNpcList(charKey) {
+    const $panel = $(`#${PANEL_ID}`);
+    const npcs = listNpcsForCharacter(charKey);
+    if (!npcs.length) {
+        $panel.find("#tns-npc-list").html(`<p class="tns-hint">ยังไม่มี NPC — กด "เพิ่ม NPC" ด้านบน หรือรอ AI เอ่ยชื่อตัวละครรองในแชทก่อนค่อยมาตั้งรูป/ชื่อทีหลังก็ได้</p>`);
+        return;
+    }
+    $panel.find("#tns-npc-list").html(npcs.map(npcCardHtml).join(""));
+}
+
 function renderProfiles() {
     const $panel = $(`#${PANEL_ID}`);
     const ctx = getContext();
@@ -343,8 +374,11 @@ function renderProfiles() {
         $panel.find("#tns-profile-character-label").text(`ตัวละคร: ${charName}`);
         $panel.find("#tns-profile-character .tns-profile-form").html(profileFormHtml("character", charKey, charName));
         $panel.find("#tns-profile-character").removeAttr("hidden");
+        renderNpcList(charKey);
+        $panel.find("#tns-profile-npc").removeAttr("hidden");
     } else {
         $panel.find("#tns-profile-character").attr("hidden", true);
+        $panel.find("#tns-profile-npc").attr("hidden", true);
     }
 
     if (personaKey) {
@@ -361,6 +395,7 @@ function renderProfiles() {
 
 function currentScopeKey($form) {
     const scope = $form.data("scope");
+    if (scope === "npc") return { scope, key: $form.data("key") };
     const key = scope === "character" ? currentCharacterKey() : currentPersonaKey();
     return { scope, key };
 }
@@ -397,6 +432,39 @@ function bindProfileEvents($panel) {
         const imageId = $(this).val();
         setProfileField(scope, key, { avatarImageId: imageId });
         $form.find(".tns-avatar-preview").attr("src", resolveAvatarUrl(imageId, scope, key));
+    });
+
+    $panel.on("click", "#tns-npc-add", async function () {
+        const charKey = currentCharacterKey();
+        if (!charKey) return;
+        const name = await promptText("ชื่อ NPC (ต้องตรงกับที่ AI เขียนใน from=\"...\")");
+        if (!name) return;
+        addNpc(charKey, name);
+        renderNpcList(charKey);
+        scheduleRebuildInjection();
+    });
+
+    $panel.on("click", ".tns-npc-name", async function () {
+        const charKey = currentCharacterKey();
+        const oldKey = $(this).closest(".tns-npc-card").data("key");
+        if (!charKey || !oldKey) return;
+        const current = $(this).text();
+        const next = await promptText("แก้ชื่อ NPC", current);
+        if (!next) return;
+        const ok = renameNpc(charKey, oldKey, next);
+        if (!ok) { toastr.error("มี NPC ชื่อนี้อยู่แล้ว", "TinySocial"); return; }
+        renderNpcList(charKey);
+        scheduleRebuildInjection();
+    });
+
+    $panel.on("click", ".tns-npc-del", async function () {
+        const charKey = currentCharacterKey();
+        const key = $(this).closest(".tns-npc-card").data("key");
+        if (!key) return;
+        if (!(await confirmAction("ลบ NPC นี้ถาวร?"))) return;
+        removeNpc(key);
+        renderNpcList(charKey);
+        scheduleRebuildInjection();
     });
 }
 

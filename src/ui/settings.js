@@ -73,12 +73,24 @@ function scheduleTokenSummaryUpdate(delay = 350) {
     tokenSummaryTimer = setTimeout(updateTokenSummary, delay);
 }
 
+/** แสดงแถว "ความลึก" เฉพาะตอนตำแหน่ง = ในประวัติแชท (IN_CHAT) — ตำแหน่งอื่นไม่มีผลอะไรกับความลึกเลย ซ่อนกันงง */
+function updateDepthRowVisibility() {
+    $("#tns-prompt-depth-row").toggle($("#tns-prompt-position").val() === "1");
+}
+
 /** เติมค่าปัจจุบันลงในฟอร์มตั้งค่าตอนโหลดครั้งแรก */
 export function loadSettingsUi() {
     const s = getSettings();
     $("#tns-enabled").prop("checked", s.enabled);
     $("#tns-api-profile").html(connectionProfileOptionsHtml(s.api.connectionProfileId));
+    $("#tns-vision-max-tokens").val(s.api.visionMaxTokens);
     $("#tns-font-mode").val(s.ui.fontMode);
+    $("#tns-inject-enabled").prop("checked", s.prompt.injectEnabled);
+    $("#tns-prompt-position").val(String(s.prompt.position));
+    $("#tns-prompt-depth").val(s.prompt.depth);
+    $("#tns-prompt-role").val(String(s.prompt.role));
+    $("#tns-prompt-scan").prop("checked", s.prompt.scan);
+    updateDepthRowVisibility();
     for (const [platform, cfg] of Object.entries(s.platforms)) {
         const $block = $(`.tns-platform-block[data-platform="${platform}"]`);
         $block.find(".tns-platform-enabled").prop("checked", cfg.enabled);
@@ -119,6 +131,46 @@ export function bindSettingsHandlers() {
         getSettings().ui.fontMode = mode;
         saveSettings();
         applyFontMode(mode);
+    });
+
+    $(document).on("change", "#tns-vision-max-tokens", function () {
+        const n = Math.max(50, Number($(this).val()) || 300);
+        getSettings().api.visionMaxTokens = n;
+        $(this).val(n);
+        saveSettings();
+    });
+
+    $(document).on("input", "#tns-inject-enabled", function () {
+        getSettings().prompt.injectEnabled = Boolean($(this).prop("checked"));
+        saveSettings();
+        updateTokenSummary();
+    });
+
+    $(document).on("change", "#tns-prompt-position", function () {
+        getSettings().prompt.position = Number($(this).val());
+        saveSettings();
+        updateDepthRowVisibility();
+        updateTokenSummary();
+    });
+
+    $(document).on("change", "#tns-prompt-depth", function () {
+        const n = Math.max(0, Number($(this).val()) || 0);
+        getSettings().prompt.depth = n;
+        $(this).val(n);
+        saveSettings();
+        updateTokenSummary();
+    });
+
+    $(document).on("change", "#tns-prompt-role", function () {
+        getSettings().prompt.role = Number($(this).val());
+        saveSettings();
+        updateTokenSummary();
+    });
+
+    $(document).on("input", "#tns-prompt-scan", function () {
+        getSettings().prompt.scan = Boolean($(this).prop("checked"));
+        saveSettings();
+        updateTokenSummary();
     });
 
     $(document).on("input", ".tns-platform-enabled", function () {

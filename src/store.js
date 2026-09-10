@@ -21,6 +21,7 @@ export const defaultSettings = {
         character: {},   // key = characters[i].avatar
         persona: {},      // key = user_avatar
         group: {},        // จองไว้รอบ 2
+        npc: {},          // key = `${characterAvatar}::${npcNameNormalized}` — ผูก NPC ไว้กับการ์ดตัวละครที่มันปรากฏ
     },
 
     // ---- รายแพลตฟอร์ม ----
@@ -350,6 +351,80 @@ export function deleteProfileKey(scope, key) {
 
 export function listProfileKeys(scope) {
     return Object.keys(getSettings().profiles[scope] || {});
+}
+
+// ==================== NPC (profiles.npc) ====================
+// NPC ผูกกับการ์ดตัวละครที่มันปรากฏ (ไม่ใช่ global) — key รวม avatar ของตัวละครไว้ด้วยเสมอ
+// เพื่อให้ "หมอ" ในเรื่องของตัวละคร A กับ "หมอ" ในเรื่องของตัวละคร B เป็นคนละคนกัน
+
+function normalizeNpcName(name) {
+    return String(name || "").trim().toLowerCase();
+}
+
+export function npcKey(characterKey, npcName) {
+    return `${characterKey}::${normalizeNpcName(npcName)}`;
+}
+
+/** เพิ่ม NPC ใหม่ (ไม่ทับถ้ามีอยู่แล้ว) — คืน key ที่ใช้อ้างอิงต่อ หรือ null ถ้าข้อมูลไม่ครบ */
+export function addNpc(characterKey, name) {
+    const trimmed = String(name || "").trim();
+    if (!characterKey || !trimmed) return null;
+    const key = npcKey(characterKey, trimmed);
+    if (!hasProfile("npc", key)) {
+        setProfileField("npc", key, { displayName: trimmed });
+    }
+    return key;
+}
+
+export function listNpcsForCharacter(characterKey) {
+    if (!characterKey) return [];
+    const settings = getSettings();
+    const prefix = `${characterKey}::`;
+    return Object.keys(settings.profiles.npc || {})
+        .filter((k) => k.startsWith(prefix))
+        .map((k) => ({ key: k, npcName: k.slice(prefix.length), profile: settings.profiles.npc[k] }))
+        .sort((a, b) => (a.profile.displayName || a.npcName).localeCompare(b.profile.displayName || b.npcName, "th"));
+}
+
+/** ย้าย NPC ไป key ใหม่ (เปลี่ยนชื่อ) + sync displayName ให้ตรงชื่อใหม่ — คืน false ถ้าชนกับ NPC อื่นที่มีอยู่แล้ว */
+export function renameNpc(characterKey, oldKey, newName) {
+    const newKey = npcKey(characterKey, newName);
+    if (newKey !== oldKey && hasProfile("npc", newKey)) return false;
+    if (newKey !== oldKey) renameProfileKey("npc", oldKey, newKey);
+    setProfileField("npc", newKey, { displayName: String(newName || "").trim() });
+    return true;
+}
+
+export function removeNpc(key) {
+    deleteProfileKey("npc", key);
+}
+
+/** ย้าย key ของ NPC ทั้งหมดที่ผูกกับตัวละครนี้ เมื่อตัวละครถูกเปลี่ยนชื่อ (avatar filename เปลี่ยน) */
+export function migrateNpcsForCharacterRename(oldCharacterKey, newCharacterKey) {
+    const settings = getSettings();
+    const oldPrefix = `${oldCharacterKey}::`;
+    const bucket = settings.profiles.npc || {};
+    let changed = false;
+    for (const key of Object.keys(bucket)) {
+        if (!key.startsWith(oldPrefix)) continue;
+        const newKey = `${newCharacterKey}::${key.slice(oldPrefix.length)}`;
+        bucket[newKey] = bucket[key];
+        delete bucket[key];
+        changed = true;
+    }
+    if (changed) { saveSettings(); bumpRev(); }
+}
+
+/** ลบ NPC ทั้งหมดที่ผูกกับตัวละครนี้ เมื่อตัวละครถูกลบ */
+export function deleteNpcsForCharacter(characterKey) {
+    const settings = getSettings();
+    const prefix = `${characterKey}::`;
+    const bucket = settings.profiles.npc || {};
+    let changed = false;
+    for (const key of Object.keys(bucket)) {
+        if (key.startsWith(prefix)) { delete bucket[key]; changed = true; }
+    }
+    if (changed) { saveSettings(); bumpRev(); }
 }
 
 // ==================== integrity ====================

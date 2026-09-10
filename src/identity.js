@@ -4,7 +4,7 @@
 import { getContext } from "../../../../extensions.js";
 import { user_avatar, getUserAvatar } from "../../../../personas.js";
 
-import { getProfile, getImage, imageUrlToSrc } from "./store.js";
+import { getProfile, getImage, imageUrlToSrc, npcKey } from "./store.js";
 
 /** key ของตัวละครปัจจุบัน = avatar filename (คงที่แม้เปลี่ยนชื่อ เพราะ CHARACTER_RENAMED จะย้าย key ให้เอง) */
 export function currentCharacterKey() {
@@ -47,6 +47,11 @@ function resolveIdentityKey(from, mes) {
     if (name && ctx.groupId) {
         const byName = findCharacterKeyByName(name);
         if (byName) return { scope: "character", key: byName, fallbackName: name };
+    }
+    // ชื่อเฉพาะที่ไม่ใช่ตัวละครหลักที่ active และไม่ใช่ตัวละครในกลุ่ม = NPC ที่ AI เล่าขึ้นมาเอง
+    // (ไม่มีการ์ดจริง) ผูกไว้กับตัวละครหลักตัวนี้ — คนละคนกับ "หมอ" ในเรื่องของตัวละครอื่น
+    if (name && activeKey && name !== ctx.name2) {
+        return { scope: "npc", key: npcKey(activeKey, name), fallbackName: name };
     }
     return { scope: "character", key: activeKey, fallbackName: name || ctx.name2 || "Character" };
 }

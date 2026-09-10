@@ -1,6 +1,6 @@
 // index.js — bootstrap เท่านั้น ฟีเจอร์จริงอยู่ใน src/
 import { eventSource, event_types } from "../../../events.js";
-import { extensionName, extensionFolderPath, getSettings, sweepIntegrity, renameProfileKey, deleteProfileKey } from "./src/store.js";
+import { extensionName, extensionFolderPath, getSettings, sweepIntegrity, renameProfileKey, deleteProfileKey, migrateNpcsForCharacterRename, deleteNpcsForCharacter } from "./src/store.js";
 import { togglePanel, refreshPanelIfOpen } from "./src/ui/panel.js";
 import { loadSettingsUi, bindSettingsHandlers, syncWandButtonVisibility, WAND_BUTTON_ID } from "./src/ui/settings.js";
 import { renderAll, queueRender, teardownAllMessages } from "./src/inject.js";
@@ -91,11 +91,15 @@ jQuery(async () => {
         // โปรไฟล์ผูกกับ avatar filename ของตัวละคร — ต้องย้าย/ลบ key ตามเมื่อตัวละครถูกเปลี่ยนชื่อ/ลบ
         eventSource.on(event_types.CHARACTER_RENAMED, (oldAvatar, newAvatar) => {
             renameProfileKey("character", oldAvatar, newAvatar);
+            migrateNpcsForCharacterRename(oldAvatar, newAvatar); // NPC ทั้งหมดที่ผูกกับตัวละครนี้ต้องย้าย key ตาม
             refreshPanelIfOpen();
         });
         eventSource.on(event_types.CHARACTER_DELETED, (payload) => {
             const avatar = payload?.character?.avatar;
-            if (avatar) deleteProfileKey("character", avatar);
+            if (avatar) {
+                deleteProfileKey("character", avatar);
+                deleteNpcsForCharacter(avatar); // NPC ที่ผูกกับตัวละครนี้ไม่มีความหมายอีกต่อไปเมื่อตัวละครถูกลบ
+            }
             refreshPanelIfOpen();
         });
 

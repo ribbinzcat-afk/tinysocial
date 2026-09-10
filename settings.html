@@ -22,6 +22,11 @@
             <p class="tns-hint">ใช้ตอนกด "บรรยายด้วย AI" ในแผง — ต้องเป็นสาย Chat Completion เท่านั้น ไม่เลือก = ใช้ค่า Image Captioning หลักของ ST (Extensions &gt; Image Captioning)</p>
 
             <div class="tns-row">
+                <label>Max tokens บรรยายรูป</label>
+                <input type="number" id="tns-vision-max-tokens" class="text_pole" min="50" max="4000" step="50">
+            </div>
+
+            <div class="tns-row">
                 <label>ฟอนต์การ์ด</label>
                 <select id="tns-font-mode" class="text_pole">
                     <option value="custom">Sarabun / Kanit (ของ TinySocial เอง)</option>
@@ -93,6 +98,38 @@
                 </label>
                 <div class="tns-platform-albums"></div>
             </div>
+
+            <hr>
+            <div class="tns-section-title">การฉีดพรอมป์เข้า AI</div>
+            <label class="checkbox_label">
+                <input id="tns-inject-enabled" type="checkbox">
+                <span>ฉีดพรอมป์เข้า AI</span>
+            </label>
+            <p class="tns-hint">ปิดได้ถ้าอยากให้การ์ดแสดงในแชทตามปกติ แต่ไม่ให้ AI รู้จักแท็ก/รูป/โปรไฟล์เลย (ต่างจากปิด "ส่งเอกสารแท็กให้ AI" รายแพลตฟอร์มตรงที่ปิดทีเดียวทุกแพลตฟอร์ม)</p>
+            <div class="tns-row">
+                <label>ตำแหน่งที่แทรก</label>
+                <select id="tns-prompt-position" class="text_pole">
+                    <option value="0">ท้ายพรอมป์หลัก (แนะนำ)</option>
+                    <option value="1">ในประวัติแชท (กำหนดความลึกได้)</option>
+                    <option value="2">ก่อนพรอมป์หลัก</option>
+                </select>
+            </div>
+            <div class="tns-row" id="tns-prompt-depth-row">
+                <label>ความลึก (In-chat)</label>
+                <input type="number" id="tns-prompt-depth" class="text_pole" min="0" max="1000">
+            </div>
+            <div class="tns-row">
+                <label>Role</label>
+                <select id="tns-prompt-role" class="text_pole">
+                    <option value="0">System</option>
+                    <option value="1">User</option>
+                    <option value="2">Assistant</option>
+                </select>
+            </div>
+            <label class="checkbox_label">
+                <input id="tns-prompt-scan" type="checkbox">
+                <span>รวมในการสแกน World Info</span>
+            </label>
 
             <hr>
             <div class="tns-section-title">พรอมป์ที่ส่งให้ AI</div>
